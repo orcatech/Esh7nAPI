@@ -14,7 +14,8 @@ The project consists of three parts:
 You can use the following method in addition to the image required for number detection.
 
 ```
-DetectNumbers(appid, appSecret, country, manufacture, model, os, networkOperatorName, phoneSerialNo, minDetectedNumbers, notes, isTestMode)
+URL: http://esh7n.byorca.com/DetectNumbers
+Parameters: appid, appSecret, country, manufacture, model, os, networkOperatorName, phoneSerialNo, minDetectedNumbers, notes, isTestMode
 ```
 The URL parameters to be passed to the method are as follows :
 -	appid , appSecret  : User’s Credentials  used to access the web service . Note : To request your credentials ,please send us on [info@byorca.com](mailto:info@byorca.com).  (Mandatory field)
@@ -48,7 +49,8 @@ Result Example:
 You can use the following method to receive the detected digits from the sent image.
 
 ```
-GetNumbersByOperationId(appid, appSecret, operationId)
+URL: http://esh7n.byorca.com/GetNumbersByOperationId
+Parameters: appid, appSecret, operationId
 ```
 The URL parameters to be passed to the method are as follows :
 -	appid , appSecret  : User’s Credentials  used to access the web service . Note : To request your credentials ,please send us on [info@byorca.com](mailto:info@byorca.com).  (Mandatory field)
@@ -69,7 +71,8 @@ You can use the following method to send flag representing a successful recharge
 
 
 ```
-SendRechargeFlag (appid, appSecret, operationId)
+URL: http://esh7n.byorca.com/SendRechargeFlag
+Parameters: appid, appSecret, operationId
 ```
 The URL parameters to be passed to the method are as follows :
 -	appid , appSecret  : User’s Credentials  used to access the web service . Note : To request your credentials ,please send us on [info@byorca.com](mailto:info@byorca.com).  (Mandatory field)
