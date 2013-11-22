@@ -1,0 +1,5 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+    <item android:id="@+id/reset_button"   android:title="@string/Reset"/>
+    <item android:id="@+id/flash_on_off_button"   android:title="@string/flash_on_off"/>
+    <item android:id="@+id/GetLastNumber_button" android:title="@string/GetLastNumbers"/>
+</menu>

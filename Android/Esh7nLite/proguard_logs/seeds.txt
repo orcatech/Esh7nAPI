@@ -1,0 +1,24 @@
+com.orcatech.Esh7n.CameraOverlay
+com.orcatech.Esh7n.CameraOverlay: CameraOverlay(android.content.Context,android.util.AttributeSet)
+com.orcatech.Esh7n.CameraView: void setOneShotPreviewCallback(android.hardware.Camera$PreviewCallback)
+com.orcatech.Esh7n.CameraView$LayoutMode: com.orcatech.Esh7n.CameraView$LayoutMode[] values()
+com.orcatech.Esh7n.CameraView$LayoutMode: com.orcatech.Esh7n.CameraView$LayoutMode valueOf(java.lang.String)
+com.orcatech.Esh7n.Esh7nAPI$Esh7NErrorCodes: com.orcatech.Esh7n.Esh7nAPI$Esh7NErrorCodes[] values()
+com.orcatech.Esh7n.Esh7nAPI$Esh7NErrorCodes: com.orcatech.Esh7n.Esh7nAPI$Esh7NErrorCodes valueOf(java.lang.String)
+com.orcatech.Esh7n.MyActivity
+com.orcatech.Esh7n.MyActivity: MyActivity()
+com.orcatech.Esh7n.R$dimen: int capButtonPadding
+com.orcatech.Esh7n.R$drawable: int ic_launcher
+com.orcatech.Esh7n.R$id: int CamOverlay
+com.orcatech.Esh7n.R$id: int CameraLayout
+com.orcatech.Esh7n.R$id: int GetLastNumber_button
+com.orcatech.Esh7n.R$id: int capturebutton
+com.orcatech.Esh7n.R$id: int flash_on_off_button
+com.orcatech.Esh7n.R$id: int reset_button
+com.orcatech.Esh7n.R$layout: int main
+com.orcatech.Esh7n.R$menu: int main
+com.orcatech.Esh7n.R$string: int GetLastNumbers
+com.orcatech.Esh7n.R$string: int Reset
+com.orcatech.Esh7n.R$string: int app_name
+com.orcatech.Esh7n.R$string: int capButtonText
+com.orcatech.Esh7n.R$string: int flash_on_off

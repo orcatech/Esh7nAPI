@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Esh7n Lite</string>
+    <string name="capButtonText">Capture</string>
+    <string name="flash_on_off">Flash On/Off</string>
+    <string name="GetLastNumbers">Get Last Numbers</string>
+    <string name="Reset">Reset</string>
+</resources>
