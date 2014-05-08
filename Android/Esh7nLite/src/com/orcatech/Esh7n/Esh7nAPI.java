@@ -15,8 +15,8 @@ import java.io.ByteArrayInputStream;
 public class Esh7nAPI {
 
     //Get these info by contacting info@byorca.com
-    final static String AppId = <APP_ID>;
-    final static String APPSecret = <APP_SECRET>;
+    final static String AppId = <APPID>;
+    final static String APPSecret = <APPSECRET>;
     final String MinDetectedNumbers = "6";
     final Boolean isTestMode = true;
     /////////////////////////////////////////////
@@ -42,6 +42,58 @@ public class Esh7nAPI {
         OS = mOS;
         NetworkOperatorName = mNetworkOperatorName;
         PhoneSerialNo = mPhoneSerialNo;
+    }
+
+    public void InitAPI(){
+        String url = "InitAPI";
+        RequestParams params = new RequestParams();
+
+        if (!AppId.isEmpty()) {
+            params.add("appId", AppId);
+        }
+        if (!APPSecret.isEmpty()) {
+            params.add("appSecret", APPSecret);
+        }
+
+        NetworkInterface.get(url,params, new JsonHttpResponseHandler() {
+            @Override
+            public void onStart()
+            {
+                Toast.makeText(mActivity, "Connecting Esh7n Server", Toast.LENGTH_SHORT).show();
+            }
+            @Override
+            public void onSuccess(JSONObject JResponse) {
+
+                if (JResponse == null){
+                    Toast.makeText(mActivity, "Error: Initialization is failed", Toast.LENGTH_LONG).show();
+                    mActivity.Rest();
+                    return;
+                }
+                try {
+                    int Errorno = JResponse.getInt("Errorno");
+                    Esh7NErrorCodes errorMessage = Esh7NErrorCodes.fromInteger(Errorno);
+                    if(errorMessage == Esh7NErrorCodes.SuccessfullInitialization)
+                        Toast.makeText(mActivity, "Successful Initialization", Toast.LENGTH_LONG).show();
+                    else
+                        Toast.makeText(mActivity, "Error: " + errorMessage.toString(), Toast.LENGTH_LONG).show();
+                } catch (Exception e) {
+                    Toast.makeText(mActivity, "Error: Initialization is failed", Toast.LENGTH_LONG).show();
+                }
+            }
+            @Override
+            public void onFailure(Throwable error, String content)
+            {
+                Toast.makeText(mActivity, "Failed to connect Esh7n Server", Toast.LENGTH_LONG).show();
+            }
+
+            @Override
+            public void onFinish()
+            {
+                mActivity.pd.dismiss();
+                mActivity.Rest();
+            }
+        });
+
     }
 
     public void DetectNumbers(byte[] data, String mNotes){
@@ -96,11 +148,11 @@ public class Esh7nAPI {
                     return;
                 }
                 try {
-                    LastOperationId = JResponse.getString("operationid");
-                    LastNumbers = JResponse.getString("numbers");
-                    int errorno = JResponse.getInt("errorno");
-                    Esh7NErrorCodes errorMessage = Esh7NErrorCodes.fromInteger(errorno);
-                    if(errorMessage == Esh7NErrorCodes.ErrorFree)
+                    LastOperationId = JResponse.getString("Operationid");
+                    LastNumbers = JResponse.getString("Numbers");
+                    int Errorno = JResponse.getInt("Errorno");
+                    Esh7NErrorCodes errorMessage = Esh7NErrorCodes.fromInteger(Errorno);
+                    if(errorMessage == Esh7NErrorCodes.NoError)
                         mActivity.onDetectionDone(LastOperationId, LastNumbers, "");
                     else
                         mActivity.onDetectionDone(LastOperationId, LastNumbers,  errorMessage.toString());
@@ -155,9 +207,9 @@ public class Esh7nAPI {
                     return;
                 }
                 try {
-                    int errorno = JResponse.getInt("errorno");
-                    Esh7NErrorCodes errorMessage = Esh7NErrorCodes.fromInteger(errorno);
-                    if(errorMessage == Esh7NErrorCodes.ErrorFree)
+                    int Errorno = JResponse.getInt("Errorno");
+                    Esh7NErrorCodes errorMessage = Esh7NErrorCodes.fromInteger(Errorno);
+                    if(errorMessage == Esh7NErrorCodes.NoError)
                         Toast.makeText(mActivity, "Recharge Flag is sent ", Toast.LENGTH_LONG).show();
                     else
                         Toast.makeText(mActivity, "Error: " + errorMessage.toString(), Toast.LENGTH_LONG).show();
@@ -211,12 +263,12 @@ public class Esh7nAPI {
                     return;
                 }
                 try {
-                    LastNumbers = JResponse.getString("numbers");
-                    int errorno = JResponse.getInt("errorno");
-                    Esh7NErrorCodes errorMessage = Esh7NErrorCodes.fromInteger(errorno);
+                    LastNumbers = JResponse.getString("Numbers");
+                    int Errorno = JResponse.getInt("Errorno");
+                    Esh7NErrorCodes errorMessage = Esh7NErrorCodes.fromInteger(Errorno);
                     String message = "Number is: " + LastNumbers;
                     if(LastNumbers.trim().isEmpty()) message = "No Number Detected!";
-                    if(errorMessage == Esh7NErrorCodes.ErrorFree)
+                    if(errorMessage == Esh7NErrorCodes.NoError)
                         Toast.makeText(mActivity, message, Toast.LENGTH_LONG).show();
                     else
                         Toast.makeText(mActivity, "Error: " + errorMessage.toString(), Toast.LENGTH_LONG).show();
@@ -247,12 +299,13 @@ public class Esh7nAPI {
 
     public enum Esh7NErrorCodes {
         ErrorUnexpected("Unexpected Error Occur", -2),
-        ErrorFree("No Errors Found", -1),
-        ErrorInvalidAppidOrAppsecret("Invalid AppId or AppSecret", 0),
-        ErrorInvalidImageFile("Invalid Image Data", 1),
-        ErrorServerDown("Server is down",2),
-        ErrorOperationidNotfound("Operation Id is not found",3),
-        ErrorTrialHasEnded("Expired Account", 4);
+        NoError("No Errors Found", -1),
+        SuccessfullInitialization("Successful Initialization", 0),
+        ErrorInvalidAppidOrAppsecret("Invalid AppId or AppSecret", 1),
+        ErrorInvalidImageFile("Invalid Image Data", 2),
+        ErrorServerDown("Server is down",3),
+        ErrorOperationidNotfound("Operation Id is not found",4),
+        ErrorTrialHasEnded("Expired Account", 5);
 
         private String stringValue;
         private Esh7NErrorCodes(String toString, int value) {
@@ -268,16 +321,18 @@ public class Esh7nAPI {
                 case -2:
                     return ErrorUnexpected;
                 case -1:
-                    return ErrorFree;
+                    return NoError;
                 case 0:
-                    return ErrorInvalidAppidOrAppsecret;
+                    return SuccessfullInitialization;
                 case 1:
-                    return ErrorInvalidImageFile;
+                    return ErrorInvalidAppidOrAppsecret;
                 case 2:
-                    return ErrorServerDown;
+                    return ErrorInvalidImageFile;
                 case 3:
-                    return ErrorOperationidNotfound;
+                    return ErrorServerDown;
                 case 4:
+                    return ErrorOperationidNotfound;
+                case 5:
                     return ErrorTrialHasEnded;
             }
             return null;
