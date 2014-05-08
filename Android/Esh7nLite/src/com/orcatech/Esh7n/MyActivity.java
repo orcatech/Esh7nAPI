@@ -69,6 +69,7 @@ public class MyActivity extends Activity {
         }
 
         _esh7n = new Esh7nAPI(this, mCountry, mManufacture, mModel, mOS, mNetworkOperatorName, mPhoneSerialNo);
+        _esh7n.InitAPI();
 
         pd = new ProgressDialog(this);
         pd.setTitle("Processing...");
