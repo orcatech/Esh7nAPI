@@ -41,7 +41,7 @@
     NSString* NetworkOperatorName;
     NSString* PhoneSerialNo;
     
-    NSString* LastOperationId;
+    NSString* LastOperationid;
     NSString* LastNumbers;
     
     AVCaptureStillImageOutput * stillImageOutput;
@@ -50,14 +50,16 @@
     
     enum Esh7NErrorCodes : NSUInteger {
         ErrorUnexpected = -2,
-        ErrorFree = -1,
-        ErrorInvalidAppidOrAppsecret = 0,
-        ErrorInvalidImageFile = 1,
-        ErrorServerDown = 2,
-        ErrorOperationidNotfound = 3,
-        ErrorTrialHasEnded = 4
+        NoError = -1,
+        SuccessfullInitialization = 0,
+        ErrorInvalidAppidOrAppsecret = 1,
+        ErrorInvalidImageFile = 2,
+        ErrorServerDown = 3,
+        ErrorOperationidNotfound = 4,
+        ErrorTrialHasEnded = 5
     };
 }
+
 
 @synthesize FlashButton, CameraLayout, CameraOverlay, progressSpinner, CaptureBtn,LastOperationBtn;
 @synthesize captureDevice;
@@ -75,13 +77,13 @@
     [FlashButton setEnabled:(_isFlashAvailable = self.captureDevice.hasTorch)];
 #endif
     
-    
     // Init Esh7n
 	// Request your Credentials from info@byorca.com
-    AppId = <AppId>;
-    APPSecret = <APPSecret>;
+    AppId = <APPID>;
+    APPSecret = <APPSECRET>;
     MinDetectedNumbers = @"6";
     isTestMode = true;
+    [self InitAPI];
     /////////////////////////////////////////////
     CTTelephonyNetworkInfo* info = [[CTTelephonyNetworkInfo alloc] init];
     CTCarrier* carrier = info.subscriberCellularProvider;
@@ -94,7 +96,7 @@
     NetworkOperatorName = carrier.carrierName;
     PhoneSerialNo = [[[UIDevice currentDevice]  identifierForVendor] UUIDString] ;
     
-    LastOperationId = @"";
+    LastOperationid = @"";
     LastNumbers = @"";
 }
 - (void) didReceiveMemoryWarning  {
@@ -144,8 +146,8 @@
 }
 - (IBAction) LastNo_Touch:(id)sender {
     
-    NSString* trimmedLastOperationId = [LastOperationId stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet] ];
-    if([trimmedLastOperationId length] == 0){
+    NSString* trimmedLastOperationid = [LastOperationid stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet] ];
+    if([trimmedLastOperationid length] == 0){
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle: @"Warning"
                                                         message: @"No Last Operation found"
                                                        delegate:self
@@ -155,7 +157,7 @@
     
     }else{
         [self startProgress];
-        [self GetNumbersByLastOperationId];
+        [self GetNumbersByLastOperationid];
     }
 }
 
@@ -224,7 +226,7 @@
     
     [self.captureSession beginConfiguration];
     [self.captureDevice lockForConfiguration:nil];
-    [self.captureDevice setTorchMode:AVCaptureTorchModeOff];
+    [self.captureDevice setTorchMode:AVCaptureTorchModeAuto];
     [self.captureDevice unlockForConfiguration];
     [self.captureSession commitConfiguration];
     
@@ -248,9 +250,9 @@
 - (void) stopCaptureSession {
     if (!_isFlashAvailable || !self.captureSession) return;
     
-    [self turnLightOff];
     [self.captureSession stopRunning];
     self.captureSession = nil;
+    [self turnLightOff];
 }
 - (void) resumeCaptureSession {
     if (!_isFlashAvailable || !self.captureSession) return;
@@ -261,8 +263,9 @@
 - (void) pauseCaptureSession {
     if (!_isFlashAvailable || !self.captureSession) return;
     
-    [self turnLightOff];
     [self.captureSession stopRunning];
+    [self turnLightOff];
+    
 }
 
 
@@ -421,13 +424,13 @@
 
 
 #pragma mark - Alerts
-- (void) showNumbers: (NSString*) numbers{
-    NSString* trimmedNo = [numbers stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet] ];
+- (void) showNumbers: (NSString*) Numbers{
+    NSString* trimmedNo = [Numbers stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet] ];
     NSString* message = @"Number is: ";
-    message = [message stringByAppendingString:numbers];
+    message = [message stringByAppendingString:Numbers];
         
     NSString* title = @"Operation Id: ";
-    title = [title stringByAppendingString:LastOperationId];
+    title = [title stringByAppendingString:LastOperationid];
     
     if([trimmedNo length] == 0){
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle: title
@@ -448,15 +451,15 @@
     [alert show];
 }
 }
-- (void) showLastOperationNumbers: (NSString*) numbers{
-    NSString* trimmedNo = [numbers stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet] ];
+- (void) showLastOperationNumbers: (NSString*) Numbers{
+    NSString* trimmedNo = [Numbers stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet] ];
     NSString* message = @"Number is: ";
-    message = [message stringByAppendingString:numbers];
+    message = [message stringByAppendingString:Numbers];
     
     if([trimmedNo length] == 0) message = @"No Number Detected!";
     
     NSString* title = @"Operation Id: ";
-    title = [title stringByAppendingString:LastOperationId];
+    title = [title stringByAppendingString:LastOperationid];
     
     UIAlertView *alert = [[UIAlertView alloc] initWithTitle: title
                                                     message: message
@@ -482,7 +485,7 @@
     message = [message stringByAppendingString:errorMessage];
     
     NSString* title = @"Operation Id: ";
-    title = [title stringByAppendingString:LastOperationId];
+    title = [title stringByAppendingString:LastOperationid];
     
     UIAlertView *alert = [[UIAlertView alloc] initWithTitle: title
                                                       message: message
@@ -508,26 +511,27 @@
         case -1:
             return @"No Errors Found";
         case 0:
-            return @"Invalid AppId or AppSecret";
+            return @"Successful Initialization API";
         case 1:
-            return @"Invalid Image Data";
+            return @"Invalid AppId or AppSecret";
         case 2:
-            return @"Server is down";
+            return @"Invalid Image Data";
         case 3:
-            return @"Operation Id is not found";
+            return @"Server is down";
         case 4:
+            return @"Operation Id is not found";
+        case 5:
             return @"Expired Account";
     }
     return @"";
 }
 
 #pragma mark - Network Tasks
-
--(void) GetNumbersByLastOperationId {
+-(void) InitAPI {
     NSURLSessionConfiguration *defaultConfigObject = [NSURLSessionConfiguration defaultSessionConfiguration];
     NSURLSession *delegateFreeSession = [NSURLSession sessionWithConfiguration: defaultConfigObject delegate: self delegateQueue: [NSOperationQueue mainQueue]];
     
-    NSString* url = @"http://esh7n.byorca.com/GetNumbersByOperationId?";
+    NSString* url = @"http://esh7n.byorca.com/InitAPI?";
     
     
     if (![AppId isEqualToString:@""]) {
@@ -535,9 +539,6 @@
     }
     if (![APPSecret isEqualToString:@""]) {
         url = [url stringByAppendingFormat:@"&appSecret=%@", APPSecret ];
-    }
-    if (![LastOperationId isEqualToString:@""]) {
-        url = [url stringByAppendingFormat:@"&operationId=%@", LastOperationId ];
     }
     NSURL *rurl = [NSURL URLWithString: [url stringByAddingPercentEscapesUsingEncoding: NSUTF8StringEncoding]];
     
@@ -555,16 +556,62 @@
                                                                  if (e!=Nil) {
                                                                      [self showError:ErrorServerDown];
                                                                  }else{
-                                                                     LastOperationId = [dict objectForKey:@"operationid"];
                                                                      
-                                                                     LastNumbers = [dict objectForKey:@"numbers"];
+                                                                    //successful initialiazation
+                                                                 }
+                                                                 
+                                                                 NSLog(@"Data = %@",text);
+                                                             }
+                                                             else
+                                                                 [self showError:ErrorServerDown];
+                                                             
+                                                         }];
+    
+    [dataTask resume];
+    
+}
+-(void) GetNumbersByLastOperationid {
+    NSURLSessionConfiguration *defaultConfigObject = [NSURLSessionConfiguration defaultSessionConfiguration];
+    NSURLSession *delegateFreeSession = [NSURLSession sessionWithConfiguration: defaultConfigObject delegate: self delegateQueue: [NSOperationQueue mainQueue]];
+    
+    NSString* url = @"http://esh7n.byorca.com/GetNumbersByOperationid?";
+    
+    
+    if (![AppId isEqualToString:@""]) {
+        url = [url stringByAppendingFormat:@"appId=%@", AppId ];
+    }
+    if (![APPSecret isEqualToString:@""]) {
+        url = [url stringByAppendingFormat:@"&appSecret=%@", APPSecret ];
+    }
+    if (![LastOperationid isEqualToString:@""]) {
+        url = [url stringByAppendingFormat:@"&Operationid=%@", LastOperationid ];
+    }
+    NSURL *rurl = [NSURL URLWithString: [url stringByAddingPercentEscapesUsingEncoding: NSUTF8StringEncoding]];
+    
+    
+    NSURLSessionDataTask * dataTask = [delegateFreeSession dataTaskWithURL:rurl
+                                                         completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
+                                                             [self stopProgress];
+                                                             if(error == nil)
+                                                             {
+                                                                 NSString * text = [[NSString alloc] initWithData: data encoding: NSUTF8StringEncoding];
+                                                                 
+                                                                 NSError *e;
+                                                                 NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:&e];
+                                                                 
+                                                                 if (e!=Nil) {
+                                                                     [self showError:ErrorServerDown];
+                                                                 }else{
+                                                                     LastOperationid = [dict objectForKey:@"Operationid"];
                                                                      
-                                                                     int errorno = [(NSNumber*)[dict objectForKey:@"errorno"] integerValue];
+                                                                     LastNumbers = [dict objectForKey:@"Numbers"];
                                                                      
-                                                                     if(errorno == ErrorFree)
+                                                                     int Errorno = [(NSNumber*)[dict objectForKey:@"Errorno"] integerValue];
+                                                                     
+                                                                     if(Errorno == NoError)
                                                                          [self showLastOperationNumbers:LastNumbers];
                                                                      else
-                                                                         [self showError:errorno];
+                                                                         [self showError:Errorno];
                                                                  }
                                                                  
                                                                  NSLog(@"Data = %@",text);
@@ -641,16 +688,16 @@
                                                                      if (e!=Nil) {
                                                                          [self showError:ErrorServerDown];
                                                                      }else{
-                                                                         LastOperationId = [dict objectForKey:@"operationid"];
+                                                                         LastOperationid = [dict objectForKey:@"Operationid"];
                                                                          
-                                                                         LastNumbers = [dict objectForKey:@"numbers"];
+                                                                         LastNumbers = [dict objectForKey:@"Numbers"];
                                                                          
-                                                                         int errorno = [(NSNumber*)[dict objectForKey:@"errorno"] integerValue];
+                                                                         int Errorno = [(NSNumber*)[dict objectForKey:@"Errorno"] integerValue];
                                                                          
-                                                                         if(errorno == ErrorFree)
+                                                                         if(Errorno == NoError)
                                                                            [self showNumbers:LastNumbers];
                                                                          else
-                                                                           [self showError:errorno];
+                                                                           [self showError:Errorno];
                                                                      }
                                                                      
                                                                      NSLog(@"Data = %@",text);
@@ -676,8 +723,8 @@
     if (![APPSecret isEqualToString:@""]) {
         url = [url stringByAppendingFormat:@"&appSecret=%@", APPSecret ];
     }
-    if (![LastOperationId isEqualToString:@""]) {
-        url = [url stringByAppendingFormat:@"&operationId=%@", LastOperationId ];
+    if (![LastOperationid isEqualToString:@""]) {
+        url = [url stringByAppendingFormat:@"&Operationid=%@", LastOperationid ];
     }
     NSURL *rurl = [NSURL URLWithString: [url stringByAddingPercentEscapesUsingEncoding: NSUTF8StringEncoding]];
     
@@ -695,15 +742,15 @@
                                                                  if (e!=Nil) {
                                                                      [self showError:ErrorServerDown];
                                                                  }else{
-                                                                     LastOperationId = [dict objectForKey:@"operationid"];
+                                                                     LastOperationid = [dict objectForKey:@"Operationid"];
                                                                      
                                                                      
-                                                                     int errorno = [(NSNumber*)[dict objectForKey:@"errorno"] integerValue];
+                                                                     int Errorno = [(NSNumber*)[dict objectForKey:@"Errorno"] integerValue];
                                                                      
-                                                                     if(errorno == ErrorFree)
+                                                                     if(Errorno == NoError)
                                                                          [self sendFlagSuccess];
                                                                      else
-                                                                         [self showError:errorno];
+                                                                         [self showError:Errorno];
                                                                  }
                                                                  
                                                                  NSLog(@"Data = %@",text);
