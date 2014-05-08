@@ -53,9 +53,9 @@ NOTE : The image byte data to be sent for detection has to be :
 Result Example:
 ```
 {
-    "operationid": "dfefe2230z13as1",
-    "numbers":  "112 145 987 354 129",
-    "errorno": "-1"
+    "Operationid": "dfefe2230z13as1",
+    "Numbers":  "112 145 987 354 129",
+    "Errorno": "-1"
 }
 ```
 
@@ -74,9 +74,9 @@ The URL parameters to be passed to the method are as follows :
 Result Example:
 ```
 {
-    "operationid": "dfefe2230z13as1",
-    "numbers":  "112 145 987 354 129",
-    "errorno": "-1"
+    "Operationid": "dfefe2230z13as1",
+    "Numbers":  "112 145 987 354 129",
+    "Errorno": "-1"
 }
 ```
 
@@ -97,9 +97,9 @@ Result Example:
 
 ```
 {
-    "operationid": "dfefe2230z13as1",
-    "numbers":  "",
-    "errorno": "-1"
+    "Operationid": "dfefe2230z13as1",
+    "Numbers":  "",
+    "Errorno": "-1"
 }
 ```
 
@@ -109,13 +109,14 @@ Result Example:
 ```
     Esh7NErrorCodes
     {
-        ErrorFree = -1,
         ErrorUnexpected = -2,
-        ErrorInvalidAppidOrAppsecret = 0,
-        ErrorInvalidImageFile = 1,
-        ErrorServerDown = 2,
-        ErrorOperationidNotfound = 3,
-        ErrorTrialHasEnded = 4
+        NoError = -1,
+        SuccessfullInitialization = 0,
+        ErrorInvalidAppidOrAppsecret = 1,
+        ErrorInvalidImageFile = 2,
+        ErrorServerDown = 3,
+        ErrorOperationidNotfound = 4,
+        ErrorTrialHasEnded = 5
     }
 ```
 
