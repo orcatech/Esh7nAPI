@@ -44,57 +44,6 @@ public class Esh7nAPI {
         PhoneSerialNo = mPhoneSerialNo;
     }
 
-    public void InitAPI(){
-        String url = "InitAPI";
-        RequestParams params = new RequestParams();
-
-        if (!AppId.isEmpty()) {
-            params.add("appId", AppId);
-        }
-        if (!APPSecret.isEmpty()) {
-            params.add("appSecret", APPSecret);
-        }
-
-        NetworkInterface.get(url,params, new JsonHttpResponseHandler() {
-            @Override
-            public void onStart()
-            {
-                Toast.makeText(mActivity, "Connecting Esh7n Server", Toast.LENGTH_SHORT).show();
-            }
-            @Override
-            public void onSuccess(JSONObject JResponse) {
-
-                if (JResponse == null){
-                    Toast.makeText(mActivity, "Error: Initialization is failed", Toast.LENGTH_LONG).show();
-                    mActivity.Rest();
-                    return;
-                }
-                try {
-                    int Errorno = JResponse.getInt("Errorno");
-                    Esh7NErrorCodes errorMessage = Esh7NErrorCodes.fromInteger(Errorno);
-                    if(errorMessage == Esh7NErrorCodes.SuccessfullInitialization)
-                        Toast.makeText(mActivity, "Successful Initialization", Toast.LENGTH_LONG).show();
-                    else
-                        Toast.makeText(mActivity, "Error: " + errorMessage.toString(), Toast.LENGTH_LONG).show();
-                } catch (Exception e) {
-                    Toast.makeText(mActivity, "Error: Initialization is failed", Toast.LENGTH_LONG).show();
-                }
-            }
-            @Override
-            public void onFailure(Throwable error, String content)
-            {
-                Toast.makeText(mActivity, "Failed to connect Esh7n Server", Toast.LENGTH_LONG).show();
-            }
-
-            @Override
-            public void onFinish()
-            {
-                mActivity.pd.dismiss();
-                mActivity.Rest();
-            }
-        });
-
-    }
 
     public void DetectNumbers(byte[] data, String mNotes){
         String url = "DetectNumbers";
