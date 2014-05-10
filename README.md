@@ -5,24 +5,9 @@ Esh7N API is a JSON/REST API for sending an image consisting of numbers and retu
 ###Project
 The project consists of three parts:
 
-- InitAPI:                      HTTPGET method.
 - DetectNumbers:  	        	HTTPPost method.
 - GetNumbersByOperationId: 		HTTPGET method.
 - SendRechargeFlag:	            HTTPGET method.
-
-### API Initialization
-
-You can use the following method to init Esh7n API; you can call this method in start of your app.
-
-```
-URL: http://esh7n.byorca.com/InitAPI
-Parameters: appid, appSecret
-```
-
-The URL parameters to be passed to the method are as follows :
--	appid , appSecret  : User’s Credentials  used to access the web service . Note : To request your credentials ,please send us on [info@byorca.com](mailto:info@byorca.com).  (Mandatory fields)
-
-
 
 ### Sending Image consisting of numbers to be detected
 
