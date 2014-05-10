@@ -83,7 +83,6 @@
     APPSecret = <APPSECRET>;
     MinDetectedNumbers = @"6";
     isTestMode = true;
-    [self InitAPI];
     /////////////////////////////////////////////
     CTTelephonyNetworkInfo* info = [[CTTelephonyNetworkInfo alloc] init];
     CTCarrier* carrier = info.subscriberCellularProvider;
@@ -527,49 +526,6 @@
 }
 
 #pragma mark - Network Tasks
--(void) InitAPI {
-    NSURLSessionConfiguration *defaultConfigObject = [NSURLSessionConfiguration defaultSessionConfiguration];
-    NSURLSession *delegateFreeSession = [NSURLSession sessionWithConfiguration: defaultConfigObject delegate: self delegateQueue: [NSOperationQueue mainQueue]];
-    
-    NSString* url = @"http://esh7n.byorca.com/InitAPI?";
-    
-    
-    if (![AppId isEqualToString:@""]) {
-        url = [url stringByAppendingFormat:@"appId=%@", AppId ];
-    }
-    if (![APPSecret isEqualToString:@""]) {
-        url = [url stringByAppendingFormat:@"&appSecret=%@", APPSecret ];
-    }
-    NSURL *rurl = [NSURL URLWithString: [url stringByAddingPercentEscapesUsingEncoding: NSUTF8StringEncoding]];
-    
-    
-    NSURLSessionDataTask * dataTask = [delegateFreeSession dataTaskWithURL:rurl
-                                                         completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
-                                                             [self stopProgress];
-                                                             if(error == nil)
-                                                             {
-                                                                 NSString * text = [[NSString alloc] initWithData: data encoding: NSUTF8StringEncoding];
-                                                                 
-                                                                 NSError *e;
-                                                                 NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:&e];
-                                                                 
-                                                                 if (e!=Nil) {
-                                                                     [self showError:ErrorServerDown];
-                                                                 }else{
-                                                                     
-                                                                    //successful initialiazation
-                                                                 }
-                                                                 
-                                                                 NSLog(@"Data = %@",text);
-                                                             }
-                                                             else
-                                                                 [self showError:ErrorServerDown];
-                                                             
-                                                         }];
-    
-    [dataTask resume];
-    
-}
 -(void) GetNumbersByLastOperationid {
     NSURLSessionConfiguration *defaultConfigObject = [NSURLSessionConfiguration defaultSessionConfiguration];
     NSURLSession *delegateFreeSession = [NSURLSession sessionWithConfiguration: defaultConfigObject delegate: self delegateQueue: [NSOperationQueue mainQueue]];
