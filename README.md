@@ -1,6 +1,6 @@
 Esh7N API
 ======================
-Esh7N API is a JSON/REST API for sending an image consisting of numbers and returning the detected digits.
+Esh7N API is an API for sending an image consisting of numbers and returning the detected digits.
 
 ###Project
 The project consists of three parts:
